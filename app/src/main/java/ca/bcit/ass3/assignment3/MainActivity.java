@@ -27,40 +27,35 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //myDb = new DbHelper(this);
-        String Events = getMaster();
-
-        tv = (TextView)findViewById(R.id.textView);
-        tv.setText(Events);
-       // viewAllEventMaster();
+        setupPartiesListView();
     }
 
-    private void setupPartyListView() {
-        ListView list_partys = (ListView) findViewById(R.id.list_continents);
+    private void setupPartiesListView() {
+        ListView list_parties = (ListView) findViewById(R.id.list_events);
 
-        String[] continents = getParties();
+        String[] events = getEvents();
 
         ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_list_item_1, continents
+                this, android.R.layout.simple_list_item_1, events
         );
 
-        list_partys.setAdapter(arrayAdapter);
+        list_parties.setAdapter(arrayAdapter);
 
-        list_partys.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        list_parties.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 TextView tv = (TextView) view;
-                String continent = tv.getText().toString();
+                String event_name = tv.getText().toString();
 
-                Intent intent = new Intent(MainActivity.this, PartyDetail.class);
-                intent.putExtra("continent", continent);
+                Intent intent = new Intent(MainActivity.this, EventDetailsActivity.class);
+                intent.putExtra("event", event_name);
 
                 startActivity(intent);
             }
         });
     }
 
-    private String[] getParties() {
+    private String[] getEvents() {
         SQLiteOpenHelper helper = new DbHelper(this);
         String[] parties = null;
         try {
@@ -87,61 +82,9 @@ public class MainActivity extends AppCompatActivity {
         return parties;
     }
 
-    public void viewAllEventMaster(){
-
-         Cursor res = myDb.GetMaster();
-        //Cursor res = myDb.rawQuery("select * from Event_Master",null);
-       // res.moveToFirst();
-        if(res.getCount() == 0){
-            Toast.makeText(this,"Nothing found",Toast.LENGTH_SHORT).show();
-        }
-
-        StringBuffer buffer = new StringBuffer();
-
-       /* while (res.moveToNext()){
-            buffer.append("Name :" + res.getString(1) +"\n");
-            buffer.append("Date :" + res.getString(2) +"\n");
-            buffer.append("Time :" + res.getString(3) +"\n\n");
-        }
-        */
-
-        do{
-
-            buffer.append("Name :" + res.getString(1) +"\n");
-            buffer.append("Date :" + res.getString(2) +"\n");
-            buffer.append("Time :" + res.getString(3) +"\n\n");
-
-        } while (res.moveToNext());
-
-        tv = (TextView)findViewById(R.id.textView);
-        tv.setText(buffer.toString());
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //setupFavoriteCountriesListView();
     }
-
-    private String getMaster() {
-        SQLiteOpenHelper helper = new DbHelper(this);
-        String Events = "";
-        try {
-            db = helper.getReadableDatabase();
-            Cursor cursor= db.rawQuery("select *  from Event_Master", null);
-
-           // int count = cursor.getCount();
-           // Events = new String[count];
-
-            if (cursor.moveToFirst()) {
-                int ndx=0;
-                do {
-                    Events += cursor.getString(1) + cursor.getString(2) +cursor.getString(3) +"\n";
-                } while (cursor.moveToNext());
-            }
-        } catch (SQLiteException sqlex) {
-            String msg = "[MainActivity / getContinents] DB unavailable";
-            msg += "\n\n" + sqlex.toString();
-
-            Toast t = Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            t.show();
-        }
-        return Events;
-    }
-
-
 }

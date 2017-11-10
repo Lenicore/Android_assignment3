@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Assignment3</string>
     <string name="title_activity_event_detail">EventDetail</string>
+    <string name="title_activity_event_details">EventDetailsActivity</string>
+    <string name="item">Item Name</string>
+    <string name="unite">Unit</string>
+    <string name="quantity">Quantity</string>
+    <string name="update">Update</string>
 </resources>

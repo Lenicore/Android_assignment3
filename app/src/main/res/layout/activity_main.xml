@@ -9,7 +9,7 @@
     tools:context="ca.bcit.ass3.assignment3.MainActivity">
 
     <ListView
-        android:id="@+id/list_continents"
+        android:id="@+id/list_events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 </LinearLayout>

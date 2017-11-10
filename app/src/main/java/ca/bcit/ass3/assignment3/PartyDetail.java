@@ -8,13 +8,11 @@ public class PartyDetail {
     private String _name;
     private String _date;
     private String _time;
-    private int _imageResourceId;
 
-    public PartyDetail(String _name, String _date, String _time, int _imageResourceId) {
+    public PartyDetail(String _name, String _date, String _time) {
         this._name = _name;
         this._date = _date;
         this._time = _time;
-        this._imageResourceId = _imageResourceId;
     }
 
     public String get_name() {
@@ -29,16 +27,10 @@ public class PartyDetail {
         return _time;
     }
 
-    public int getImageResourceId() {
-        return _imageResourceId;
-    }
-
     @Override
     public String toString() {
-        return "PartyDetail{" +
-                "_name='" + _name + '\'' +
-                ", _date='" + _date + '\'' +
-                ", _time='" + _time + '\'' +
-                '}';
+        return "Event: " + _name + "\n"
+                + "Date: " + _date + "\n"
+                + "Time: " + _time;
     }
 }
