@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Assignment3</string>
+    <string name="title_activity_event_detail">EventDetail</string>
 </resources>
