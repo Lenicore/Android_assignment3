@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
@@ -13,7 +14,7 @@ import android.widget.Toast;
  */
 
 public class DbHelper extends SQLiteOpenHelper {
-    private static final String DB_NAME = "Asn31.sqlite";
+    private static final String DB_NAME = "Asn33.sqlite";
     private Context context;
 
     private static final int DB_VERSION = 3;
@@ -38,9 +39,15 @@ public class DbHelper extends SQLiteOpenHelper {
         try {
             if (oldVersion < 1) {
                 db.execSQL(getCreateEventMasterTableSql());
-                //db.execSQL(getCreateEventDetailTableSql());
+                db.execSQL(getCreateEventDetailTableSql());
                 for (PartyDetail p : events) {
                     insertEvents(db, p);
+                }
+
+                for(ItemsDetails it: foods) {
+                    insertItems(db,it, 1);
+                    insertItems(db,it, 2);
+                    insertItems(db,it, 3);
                 }
             }
 
@@ -61,8 +68,8 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private String getCreateEventMasterTableSql(){
         String sql ="";
-        sql += "CREATE TABLE EventMaster (";
-        sql += "_id INTEGER PRIMARY KEY AUTOINCREMENT, ";
+        sql += "CREATE TABLE Event_Master (";
+        sql += "eventId INTEGER PRIMARY KEY AUTOINCREMENT, ";
         sql += "Name TEXT,";
         sql += "Date TEXT,";
         sql += "Time TEXT);";
@@ -81,20 +88,23 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private String getCreateEventDetailTableSql(){
         String sql ="";
-        sql += "CREATE TABLE EventDetail (";
+        sql += "CREATE TABLE Event_Detail (";
         sql += "_detailId INTEGER PRIMARY KEY AUTOINCREMENT, ";
         sql += "ItemName TEXT,";
-        sql += "ItemUnit INTEGER,";
+        sql += "ItemUnit TEXT,";
         sql += "ItemQuantity INTEGER,";
-        sql += "eventId INTEGER, FOREIGN KEY(eventId) REFERENCES Event_Master(eventId));";
+        sql += "eventId INTEGER,";
+        //sql += "eventId INTEGER, FOREIGN KEY(eventId) REFERENCES Event_Master(eventId));";
+        sql += "FOREIGN KEY (eventId) REFERENCES Event_Master (eventId));";
         return sql;
     }
 
-    private void insertItems(SQLiteDatabase db, PartyDetail party) {
+    private void insertItems(SQLiteDatabase db, ItemsDetails food, int _eventId ) {
         ContentValues values = new ContentValues();
-        values.put("ItemName", party.get_name());
-        values.put("ItemUnit", party.get_date());
-        values.put("ItemQuantity", party.get_time());
+        values.put("ItemName", food.get_name());
+        values.put("ItemUnit", food.get_unit());
+        values.put("ItemQuantity", food.getQuantity());
+        values.put("eventId", _eventId);
 
         db.insert("Event_Detail", null, values);
     }
@@ -105,7 +115,59 @@ public class DbHelper extends SQLiteOpenHelper {
             new PartyDetail("New Year Eve", "December 31, 2017", "8:00 PM"),
     };
 
-    public ItemsDetails[] foods = {
-
+    public static final ItemsDetails[] foods = {
+            new ItemsDetails("Paper plates", "Pieces", 20),
+            new ItemsDetails("Paper cups", "Pieces", 30),
+            new ItemsDetails("Napkins", "Pieces", 100),
+            new ItemsDetails("Beer", "6 packs", 5),
+            new ItemsDetails("Pop", "2 Liter bottles", 3),
+            new ItemsDetails("Pizza", "Large", 3),
+            new ItemsDetails("Peanuts", "Grams", 200),
     };
+
+    public String[] getItems(int id) {
+        SQLiteDatabase db = getReadableDatabase();
+
+        String[] details = null;
+        //ItemsDetails details = null;
+        //SQLiteOpenHelper helper = new DbHelper();
+
+        try {
+
+//            Cursor cursor = db.query("Event_Detail",
+//                    new String[]{"ItemName", "ItemUnit", "ItemQuantity"},
+//                    "eventId = ?",
+//                    new String[]{id},
+//                    null, null, null);
+            Cursor cursor = db.rawQuery("select * from Event_Detail where eventId ="
+                    + id, null);
+
+            int count = cursor.getCount();
+            details = new String[count];
+            // move to the first record
+            if (cursor.moveToFirst()) {
+                int ndx=0;
+                do {
+                    details[ndx++] = cursor.getString(1)+
+                            cursor.getString(2)+
+                            cursor.getString(3);
+                } while (cursor.moveToNext());
+//                do {
+//                    // get the data into array, or class variable
+//                    details = new ItemsDetails(
+//                            cursor.getString(1),
+//                            cursor.getString(2),
+//                            cursor.getInt(3));
+//                } while (cursor.moveToNext());
+            }
+        } catch (SQLiteException sqlex) {
+            String msg = "[CountryDetailsActivity/getCountry] DB unavailable";
+            msg += "\n\n" + sqlex.toString();
+
+        //    Toast t = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            //t.show();
+        }
+
+        return details;
+    }
 }

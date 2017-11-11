@@ -47,8 +47,10 @@ public class MainActivity extends AppCompatActivity {
                 TextView tv = (TextView) view;
                 String event_name = tv.getText().toString();
 
+
                 Intent intent = new Intent(MainActivity.this, EventDetailsActivity.class);
                 intent.putExtra("event", event_name);
+
 
                 startActivity(intent);
             }
@@ -81,6 +83,8 @@ public class MainActivity extends AppCompatActivity {
 
         return parties;
     }
+
+
 
     @Override
     protected void onRestart() {

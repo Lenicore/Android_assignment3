@@ -2,21 +2,16 @@ package ca.bcit.ass3.assignment3;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.CheckBox;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,6 +24,7 @@ public class EventDetailsActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
+        setupEventListView();
 
 
         String events = getIntent().getExtras().get("event").toString();
@@ -46,6 +42,69 @@ public class EventDetailsActivity extends Activity {
         TextView time = (TextView) findViewById(R.id.time);
         time.setText(party.get_time());
 
+
+
+    }
+
+    private void setupEventListView() {
+        DbHelper dbHelper = new DbHelper(this);
+        ListView list_parties = (ListView) findViewById(R.id.eventDetails);
+
+        //ItemsDetails details = getItems(1);
+       // String[] details = getItems(1);
+        String[] details = dbHelper.getItems(1);
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
+                this, android.R.layout.simple_list_item_1, details
+        );
+
+        list_parties.setAdapter(arrayAdapter);
+
+    }
+
+    private String[] getItems(int id) {
+        String[] details = null;
+        //ItemsDetails details = null;
+        SQLiteOpenHelper helper = new DbHelper(this);
+
+        try {
+            SQLiteDatabase db = helper.getReadableDatabase();
+//            Cursor cursor = db.query("Event_Detail",
+//                    new String[]{"ItemName", "ItemUnit", "ItemQuantity"},
+//                    "eventId = ?",
+//                    new String[]{id},
+//                    null, null, null);
+
+            Cursor cursor = db.rawQuery("select * from Event_Detail where eventId = "
+                    + id, null);
+
+            int count = cursor.getCount();
+            details = new String[count];
+            // move to the first record
+            if (cursor.moveToFirst()) {
+                int ndx=0;
+                do {
+                    details[ndx++] = cursor.getString(1)+
+                            cursor.getString(2)+
+                            cursor.getInt(3);
+                } while (cursor.moveToNext());
+//                do {
+//                    // get the data into array, or class variable
+//                    details = new ItemsDetails(
+//                            cursor.getString(1),
+//                            cursor.getString(2),
+//                            cursor.getInt(3));
+//                } while (cursor.moveToNext());
+            }
+        } catch (SQLiteException sqlex) {
+            String msg = "[CountryDetailsActivity/getCountry] DB unavailable";
+            msg += "\n\n" + sqlex.toString();
+
+            Toast t = Toast.makeText(this, msg, Toast.LENGTH_LONG);
+            t.show();
+        }
+
+        return details;
     }
 
     private PartyDetail getEvents(String pty) {
@@ -54,7 +113,7 @@ public class EventDetailsActivity extends Activity {
         try {
             SQLiteDatabase db = helper.getReadableDatabase();
             Cursor cursor = db.query("Event_Master",
-                    new String[]{"Name", "Date", "Time", "IMAGE_RESOURCE_ID"},
+                    new String[]{"Name", "Date", "Time"},
                     "Name = ?",
                     new String[]{pty},
                     null, null, null);
