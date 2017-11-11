@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 public class DbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "Asn33.sqlite";
-    private Context context;
+    public static Context context;
 
     private static final int DB_VERSION = 3;
 
@@ -93,9 +93,9 @@ public class DbHelper extends SQLiteOpenHelper {
         sql += "ItemName TEXT,";
         sql += "ItemUnit TEXT,";
         sql += "ItemQuantity INTEGER,";
-        sql += "eventId INTEGER,";
-        //sql += "eventId INTEGER, FOREIGN KEY(eventId) REFERENCES Event_Master(eventId));";
-        sql += "FOREIGN KEY (eventId) REFERENCES Event_Master (eventId));";
+//        sql += "eventId INTEGER,";
+        sql += "eventId INTEGER, FOREIGN KEY(eventId) REFERENCES Event_Master(eventId));";
+//        sql += "FOREIGN KEY (eventId) REFERENCES Event_Master (eventId));";
         return sql;
     }
 
@@ -129,45 +129,28 @@ public class DbHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = getReadableDatabase();
 
         String[] details = null;
-        //ItemsDetails details = null;
-        //SQLiteOpenHelper helper = new DbHelper();
 
         try {
-
-//            Cursor cursor = db.query("Event_Detail",
-//                    new String[]{"ItemName", "ItemUnit", "ItemQuantity"},
-//                    "eventId = ?",
-//                    new String[]{id},
-//                    null, null, null);
-            Cursor cursor = db.rawQuery("select * from Event_Detail where eventId ="
-                    + id, null);
-
+            Cursor cursor = db.rawQuery("SELECT * FROM Event_Detail where eventId = "
+            + id, null);
             int count = cursor.getCount();
             details = new String[count];
-            // move to the first record
-            if (cursor.moveToFirst()) {
-                int ndx=0;
+
+            if(cursor.moveToFirst()) {
+                int ndx = 0;
                 do {
-                    details[ndx++] = cursor.getString(1)+
-                            cursor.getString(2)+
+                    details[ndx++] = cursor.getString(1) +
+                            cursor.getString(2) +
                             cursor.getString(3);
                 } while (cursor.moveToNext());
-//                do {
-//                    // get the data into array, or class variable
-//                    details = new ItemsDetails(
-//                            cursor.getString(1),
-//                            cursor.getString(2),
-//                            cursor.getInt(3));
-//                } while (cursor.moveToNext());
             }
         } catch (SQLiteException sqlex) {
-            String msg = "[CountryDetailsActivity/getCountry] DB unavailable";
+            String msg = "[DbHelper/getItems] DB unavailable";
             msg += "\n\n" + sqlex.toString();
 
-        //    Toast t = Toast.makeText(this, msg, Toast.LENGTH_LONG);
-            //t.show();
+//            Toast t = Toast.makeText(EventDetailsActivity.class, msg, Toast.LENGTH_LONG);
+//            t.show();
         }
-
         return details;
     }
 }

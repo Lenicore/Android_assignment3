@@ -8,11 +8,19 @@ public class PartyDetail {
     private String _name;
     private String _date;
     private String _time;
+    private int     _eventId;
 
     public PartyDetail(String _name, String _date, String _time) {
         this._name = _name;
         this._date = _date;
         this._time = _time;
+    }
+
+    public PartyDetail(String _name, String _date, String _time, int _eventId) {
+        this._name = _name;
+        this._date = _date;
+        this._time = _time;
+        this._eventId = _eventId;
     }
 
     public String get_name() {

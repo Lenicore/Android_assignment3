@@ -1,5 +1,6 @@
 package ca.bcit.ass3.assignment3;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,26 +11,31 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.FilterQueryProvider;
 import android.widget.ListView;
+import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 
 public class MainActivity extends AppCompatActivity {
-
-    public DbHelper myDb;
-    public SQLiteDatabase db;
+    private SQLiteDatabase db;
     private Cursor cursor;
-
-    private TextView tv;
+    private Button addEvent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         setupPartiesListView();
+
+        addEvent = (Button) findViewById(R.id.addEvent);
     }
 
+    // Original method
     private void setupPartiesListView() {
         ListView list_parties = (ListView) findViewById(R.id.list_events);
 
@@ -51,11 +57,13 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, EventDetailsActivity.class);
                 intent.putExtra("event", event_name);
 
-
                 startActivity(intent);
             }
         });
     }
+
+
+
 
     private String[] getEvents() {
         SQLiteOpenHelper helper = new DbHelper(this);
@@ -82,6 +90,14 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return parties;
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cursor.close();
+        db.close();
     }
 
 

@@ -19,6 +19,10 @@
         <activity
             android:name=".EventDetailsActivity"
             android:label="@string/title_activity_event_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddItemActivity"
+            android:label="@string/title_activity_add_item"
             android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 

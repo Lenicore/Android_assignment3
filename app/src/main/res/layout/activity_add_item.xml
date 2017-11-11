@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="ca.bcit.ass3.assignment3.AddItemActivity">
+
+    <EditText
+        android:id="@+id/ItemName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Name"
+        android:layout_marginTop="85dp"
+        android:layout_marginLeft="85dp"
+         />
+
+    <EditText
+        android:id="@+id/ItemUnit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Unit"
+        android:layout_marginTop="85dp"
+        android:layout_marginLeft="85dp"
+         />
+
+    <EditText
+        android:id="@+id/ItemQuantity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Quantity"
+        android:layout_marginTop="85dp"
+        android:layout_marginLeft="85dp"         />
+
+    <Button
+        android:id="@+id/saveItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:layout_gravity="bottom|center"
+        android:layout_margin="60dp" />
+
+</LinearLayout>

@@ -8,11 +8,19 @@ public class ItemsDetails {
     private String  _name;
     private String  _unit;
     private int     quantity;
+    private int     Event_ID;
 
     public ItemsDetails(String _name, String _unit, int quantity) {
         set_name(_name);
         set_unit(_unit);
         setQuantity(quantity);
+    }
+
+    public ItemsDetails(String _name, String _unit, int quantity, int event_ID) {
+        set_name(_name);
+        set_unit(_unit);
+        setQuantity(quantity);
+        this.Event_ID = event_ID;
     }
 
     public String get_name() {
@@ -37,6 +45,10 @@ public class ItemsDetails {
 
     public void setQuantity(int quantity) {
         this.quantity = quantity;
+    }
+
+    public int getEventID() {
+        return Event_ID;
     }
 
     @Override
