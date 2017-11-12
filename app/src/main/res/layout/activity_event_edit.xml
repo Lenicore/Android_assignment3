@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ca.bcit.ass3.assignment3.EditEventActivity">
+
+
+    <TextView
+        android:id="@+id/eventName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_name"
+        android:layout_marginRight="10dp" />
+
+
+    <EditText
+        android:id="@+id/eventNameInput"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:ems="10"/>
+
+
+    <TextView
+        android:id="@+id/eventDate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_date"
+        android:layout_marginRight="10dp" />
+
+
+    <EditText
+        android:id="@+id/eventDateInput"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:ems="10"/>
+
+
+    <TextView
+        android:id="@+id/eventTime"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_time"
+        android:layout_marginRight="10dp" />
+
+
+    <EditText
+        android:id="@+id/eventTimeInput"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:ems="10"/>
+
+    <Button
+        android:id="@+id/updateEvent"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="30dp"
+        android:text="@string/update" />
+
+
+</LinearLayout>

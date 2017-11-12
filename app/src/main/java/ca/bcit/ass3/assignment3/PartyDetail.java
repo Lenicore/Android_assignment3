@@ -35,10 +35,15 @@ public class PartyDetail {
         return _time;
     }
 
+    public int get_eventId() {
+        return _eventId;
+    }
+
     @Override
     public String toString() {
         return "Event: " + _name + "\n"
                 + "Date: " + _date + "\n"
                 + "Time: " + _time;
     }
+
 }

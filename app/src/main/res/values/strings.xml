@@ -1,10 +1,28 @@
 <resources>
-    <string name="app_name">Assignment3</string>
+    <string name="app_name">Dicoy_Kwok_Zhang</string>
+    <string name="team">Kevin Dicoy_Nelson Kwok_Lenic Zhang</string>
     <string name="title_activity_event_detail">EventDetail</string>
     <string name="title_activity_event_details">EventDetailsActivity</string>
     <string name="item">Item Name</string>
     <string name="unite">Unit</string>
     <string name="quantity">Quantity</string>
-    <string name="update">Update Table</string>
+    <string name="AddItems">Add Items</string>
     <string name="title_activity_add_item">AddItemActivity</string>
+    <string name="addEvent">Add Event</string>
+    <string name="delEvent">Delete Event</string>
+    <string name="title_activity_add_event">AddEventActivity</string>
+    <string name="addTo">Add New Event</string>
+    <string name="spinner_title">Choose Event</string>
+    <string name="update">Update</string>
+    <string name="button_search">Search</string>
+    <string name="event_create">Create</string>
+    <string name="action_share">Share</string>
+    <string name="search_hint">Enter a event name</string>
+    <string name="search_desc">Search Event</string>
+    <string name="button_add_item">Add Item</string>
+    <string name="button_edit_event">Edit Event</string>
+    <string name="button_delete_event">Delete Event</string>
+    <string name="event_name">Event Name</string>
+    <string name="event_date">Event Date</string>
+    <string name="event_time">Event Time</string>
 </resources>

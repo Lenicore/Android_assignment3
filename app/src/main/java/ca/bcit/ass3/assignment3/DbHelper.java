@@ -9,6 +9,9 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by nelson on 11/2/2017.
  */
@@ -16,6 +19,8 @@ import android.widget.Toast;
 public class DbHelper extends SQLiteOpenHelper {
     private static final String DB_NAME = "Asn33.sqlite";
     public static Context context;
+    public static final String Event_Master = "Event_Master";
+    public static final String Event_Detail = "Event_Detail";
 
     private static final int DB_VERSION = 3;
 
@@ -32,7 +37,12 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
+        // Drop older table if existed
+        SQLiteDatabase db = getReadableDatabase();
+        db.execSQL("DROP TABLE IF EXISTS " + Event_Master);
+        db.execSQL("DROP TABLE IF EXISTS " + Event_Detail);
         updateMyDatabase(sqLiteDatabase, i, i1);
+
     }
 
     private void updateMyDatabase(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -51,12 +61,6 @@ public class DbHelper extends SQLiteOpenHelper {
                 }
             }
 
-            if (oldVersion < 2)
-                db.execSQL("ALTER TABLE Event_Master ADD COLUMN POPULATION NUMERIC;");
-
-            if (oldVersion < 3)
-                db.execSQL("ALTER TABLE Event_Detail ADD COLUMN FAVORITE NUMERIC;");
-
         } catch (SQLException sqle) {
             String msg = "[MyPlanetDbHelper / updateMyDatabase/insertCountry] DB unavailable";
             msg += "\n\n" + sqle.toString();
@@ -65,6 +69,122 @@ public class DbHelper extends SQLiteOpenHelper {
         }
     }
 
+    public PartyDetail getEvent(int _EVENTID) {
+        PartyDetail event = null;
+
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT * FROM Event_Master WHERE _EVENTID = "
+                    +_EVENTID, null);
+
+            // move to the first record
+            if (cursor.moveToFirst()) {
+                // get the country details from the cursor
+                event  = new PartyDetail(
+                        cursor.getString(0),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getInt(3)
+                );
+            }
+        } catch (SQLiteException sqlex) {
+            String msg = "[MyDbHelper/getEvent] DB unavailable";
+            msg += "\n\n" + sqlex.toString();
+
+            Toast t = Toast.makeText(context, msg, Toast.LENGTH_LONG);
+            t.show();
+        }
+        return  event;
+    }
+
+    /**
+     * Getting all events
+     * returns list of events
+     * */
+    public List<String> getAllEvents(){
+        List<String> events = new ArrayList<String>();
+
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + Event_Master;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+                events.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+
+        // closing connection
+        cursor.close();
+        db.close();
+
+        // returning events
+        return events;
+    }
+
+    /**
+     * Getting all items
+     * returns list of items
+     * */
+    public void getAllItems(ArrayList<ItemsDetails> items, int _EVENTID){
+        SQLiteDatabase db = getReadableDatabase();
+
+        try {
+            db = getReadableDatabase();
+            Cursor cursor= db.rawQuery("select * from Event_Detail where _EVENTID = "
+                    + _EVENTID, null);
+
+            if (cursor.moveToFirst()) {
+
+                do {
+                    ItemsDetails oneItem = new ItemsDetails(
+                            cursor.getInt(0),
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getInt(3),
+                            _EVENTID
+                    );
+                    items.add(oneItem);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLiteException sqlex) {
+            String msg = "[MyDbHelper / getItems] DB unavailable";
+            msg += "\n\n" + sqlex.toString();
+
+            Toast t = Toast.makeText(context, msg, Toast.LENGTH_LONG);
+            t.show();
+        }
+    }
+
+    public ArrayList<PartyDetail> getSimilarEvents(String keyWord) {
+        ArrayList<PartyDetail> event = new ArrayList<PartyDetail>();
+
+        try {
+            SQLiteDatabase db = getReadableDatabase();
+            Cursor cursor= db.rawQuery("select * from Event_Master WHERE NAME LIKE '%"
+                    + keyWord + "%' ;", null);
+
+            if (cursor.moveToFirst()) {
+                do {
+                    PartyDetail oneEvent = new PartyDetail(cursor.getString(0),
+                            cursor.getString(1),
+                            cursor.getString(2),
+                            cursor.getInt(3));
+                    event.add(oneEvent);
+                } while (cursor.moveToNext());
+            }
+        } catch (SQLiteException sqlex) {
+            String msg = "[DbHelper / getSimilarEvents] DB unavailable";
+            msg += "\n\n" + sqlex.toString();
+
+            Toast t = Toast.makeText(context, msg, Toast.LENGTH_LONG);
+            t.show();
+        }
+        return event;
+    }
 
     private String getCreateEventMasterTableSql(){
         String sql ="";
@@ -77,7 +197,7 @@ public class DbHelper extends SQLiteOpenHelper {
         return sql;
     }
 
-    private void insertEvents(SQLiteDatabase db, PartyDetail event) {
+    public void insertEvents(SQLiteDatabase db, PartyDetail event) {
         ContentValues values = new ContentValues();
         values.put("Name", event.get_name());
         values.put("Date", event.get_date());
@@ -93,13 +213,11 @@ public class DbHelper extends SQLiteOpenHelper {
         sql += "ItemName TEXT,";
         sql += "ItemUnit TEXT,";
         sql += "ItemQuantity INTEGER,";
-//        sql += "eventId INTEGER,";
         sql += "eventId INTEGER, FOREIGN KEY(eventId) REFERENCES Event_Master(eventId));";
-//        sql += "FOREIGN KEY (eventId) REFERENCES Event_Master (eventId));";
         return sql;
     }
 
-    private void insertItems(SQLiteDatabase db, ItemsDetails food, int _eventId ) {
+    public void insertItems(SQLiteDatabase db, ItemsDetails food, int _eventId ) {
         ContentValues values = new ContentValues();
         values.put("ItemName", food.get_name());
         values.put("ItemUnit", food.get_unit());
@@ -107,6 +225,34 @@ public class DbHelper extends SQLiteOpenHelper {
         values.put("eventId", _eventId);
 
         db.insert("Event_Detail", null, values);
+    }
+
+    public void updateEvent(PartyDetail event, int _EVENTID) {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "UPDATE EVENT_MASTER SET " + "NAME = '" + event.get_name() + "', "
+                + "DATE = '" + event.get_date() + "', " + "TIME = '" + event.get_time() + "' "
+                + "WHERE _EVENTID = " + _EVENTID;
+
+        db.execSQL(sql);
+    }
+
+    public void deleteEvent(SQLiteDatabase db, int _EVENTID) {
+        String sql = "DELETE FROM Event_Master WHERE _EVENTID = " + _EVENTID;
+        db.execSQL(sql);
+    }
+
+    public void updateItem(ItemsDetails item, int _DETAILID) {
+        SQLiteDatabase db = getReadableDatabase();
+        String sql = "UPDATE Event_Detail SET " + "ITEMNAME = '" + item.get_name() + "', "
+                + "ITEMUNIT = '" + item.get_unit() + "', "
+                + "ITEMQUANTITY = '" + item.getQuantity() + "' "
+                + "WHERE _DETAILID = " + _DETAILID;
+        db.execSQL(sql);
+    }
+
+    public void deleteItem(SQLiteDatabase db, int _DETAILID) {
+        String sql = "DELETE FROM Event_Detail WHERE _DETAILID = " + _DETAILID;
+        db.execSQL(sql);
     }
 
     private static final PartyDetail[] events = {
@@ -153,4 +299,5 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         return details;
     }
+
 }

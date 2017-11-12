@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -24,36 +25,29 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class EventDetailsActivity extends Activity {
+public class EventDetailsActivity extends AppCompatActivity {
 
-    private SQLiteDatabase db;
-    private Cursor cursor;
-    private Button addItems;
-    private PartyDetail event;
-    private ItemsDetails eventDetail;
+    SQLiteDatabase db;
+    Cursor cursor;
+    Button addItems;
+    PartyDetail event;
+    ItemsDetails eventDetail;
+    private int detailID;
+    int pkID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_details);
-        setupEventListView();
 
         event = new PartyDetail("","","");
         eventDetail = new ItemsDetails("","",0);
         addItems = (Button)findViewById(R.id.addItem);
+        pkID = Integer.parseInt(getIntent().getStringExtra("eventId"));
+        detailID = (Integer) getIntent().getExtras().get("detailID");
 
-        String getEventId = getIntent().getExtras().get("event").toString();
-        eventDetail = getEventDetail(getEventId);
-
-        findViewById(R.id.addItem).setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Intent intent = new Intent(EventDetailsActivity.this, AddItemActivity.class);
-                //hard coded ID
-                intent.putExtra("eventId", "3");
-
-                startActivity(intent);
-            }
-        });
+        setupEventDetailsListView();
 
         String events = getIntent().getExtras().get("event").toString();
         PartyDetail party = getEvents(events);
@@ -74,20 +68,20 @@ public class EventDetailsActivity extends Activity {
 
     }
 
-    private void setupEventListView() {
-        DbHelper dbHelper = new DbHelper(this);
-        ListView list_parties = (ListView) findViewById(R.id.eventDetails);
+    private void setupEventDetailsListView() {
+        String getEventId = getIntent().getExtras().get("event").toString();
+        eventDetail = getEventDetail(getEventId);
 
-        //ItemsDetails details = getItems(1);
-       // String[] details = getItems(1);
-        String[] details = dbHelper.getItems(1);
 
-        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(
-                this, android.R.layout.simple_list_item_1, details
-        );
+        findViewById(R.id.addItem).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent intent = new Intent(EventDetailsActivity.this, AddItemActivity.class);
 
-        list_parties.setAdapter(arrayAdapter);
+                intent.putExtra("eventId", pkID);
 
+                startActivity(intent);
+            }
+        });
     }
 
     private PartyDetail getEvents(String pty) {
@@ -183,5 +177,11 @@ public class EventDetailsActivity extends Activity {
             cursor.close();
         if (db != null)
             db.close();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setupEventDetailsListView();
     }
 }

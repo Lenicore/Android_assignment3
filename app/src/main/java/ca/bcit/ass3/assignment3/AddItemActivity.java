@@ -20,6 +20,7 @@ public class AddItemActivity extends AppCompatActivity {
     private EditText ItemName;
     private EditText ItemQuantity;
     private SQLiteDatabase db;
+    private int eventID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,37 +31,22 @@ public class AddItemActivity extends AppCompatActivity {
         ItemName = (EditText) findViewById(R.id.ItemName);
         ItemUnit = (EditText) findViewById(R.id.ItemUnit);
         ItemQuantity = (EditText) findViewById(R.id.ItemQuantity);
-
+        eventID = (Integer) getIntent().getExtras().get("eventID");
 
 
         SaveItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (!ItemName.getText().toString().equals("")) {
-                    int IQuantity = Integer.parseInt(ItemQuantity.getText().toString());
+                DbHelper helper = new DbHelper(getApplicationContext());
+                db = helper.getReadableDatabase();
 
-                    String pkID = getIntent().getStringExtra("eventId");
-                    ItemsDetails id = new ItemsDetails(ItemName.getText().toString(), ItemUnit.getText().toString(), IQuantity, Integer.parseInt(pkID));
-                    insertDetails(id);
-                }
+                ItemsDetails id = new ItemsDetails(ItemName.getText().toString(), ItemUnit.getText().toString(), Integer.parseInt(ItemQuantity.getText().toString()) );
 
+                helper.insertItems(helper.getWritableDatabase(),id,eventID);
+                finish();
             }
         });
     }
 
-    private void insertDetails (ItemsDetails event){
-        SQLiteOpenHelper helper = new DbHelper(this);
-        db = helper.getWritableDatabase();
-
-
-        ContentValues values = new ContentValues();
-        values.put("ItemName", event.get_name());
-        values.put("ItemUnit", event.get_unit());
-        values.put("ItemQuantity", event.getQuantity());
-        values.put("eventId", event.getEventID());
-
-        db.insert("Event_Detail", null, values);
-
-    }
 }

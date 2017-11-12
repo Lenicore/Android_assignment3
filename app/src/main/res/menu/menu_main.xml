@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/event_create"
+        android:title="@string/event_create"
+        app:showAsAction="always"
+        android:orderInCategory="1"
+        android:icon="@mipmap/plus"/>
+
+    <item android:id="@+id/event_search"
+        android:title="@string/button_search"
+        app:showAsAction="always"
+        android:orderInCategory="2"
+        android:icon="@mipmap/search"/>
+
+    <item android:id="@+id/action_share"
+        android:title="@string/action_share"
+        android:orderInCategory="3"
+        app:showAsAction="never"
+        app:actionProviderClass="android.support.v7.widget.ShareActionProvider"/>
+
+
+</menu>
