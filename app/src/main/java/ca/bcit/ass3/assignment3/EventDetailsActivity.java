@@ -69,8 +69,8 @@ public class EventDetailsActivity extends AppCompatActivity {
     }
 
     private void setupEventDetailsListView() {
-        String getEventId = getIntent().getExtras().get("event").toString();
-        eventDetail = getEventDetail(getEventId);
+        Intent i = getIntent();
+        String EventId = i.getStringExtra("id");
 
 
         findViewById(R.id.addItem).setOnClickListener(new View.OnClickListener() {

@@ -51,4 +51,25 @@
         android:layout_marginRight="8dip"
         />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <ListView
+            android:id="@+id/eventList"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"/>
+
+        <fragment
+            android:name="ca.bcit.ass3.assignment3.EvFragment"
+            android:id="@+id/list_frag"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
+
 </LinearLayout>

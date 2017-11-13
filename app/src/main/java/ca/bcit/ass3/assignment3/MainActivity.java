@@ -108,15 +108,12 @@ public class MainActivity extends AppCompatActivity{
         list_parties.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                TextView tv = (TextView) view;
-                String event_name = tv.getText().toString();
-
-                //int id = Integer.parseInt(getIntent().getStringExtra("eventId"));
-
+                ListView list_parties = (ListView) findViewById(R.id.list_events);
+                String x = (String) list_parties.getAdapter().getItem(i);
+                String msg = x.substring(0,1);
 
                 Intent intent = new Intent(MainActivity.this, EventDetailsActivity.class);
-                intent.putExtra("event", event_name);
-                //intent.putExtra("eventId", id);
+                intent.putExtra("id", msg);
 
                 startActivity(intent);
             }
